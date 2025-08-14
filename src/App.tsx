@@ -1,8 +1,8 @@
 import Adw from "gi://Adw"
 import Gio from "gi://Gio"
 import { register } from "gnim/gobject"
-import { createRoot, createSettings } from "gnim"
-import { schema, SettingsContext } from "./settings"
+import { createRoot } from "gnim"
+import { createAppSettings, SettingsContext } from "./settings"
 import AppWindow from "./AppWindow"
 
 @register()
@@ -22,7 +22,7 @@ export class App extends Adw.Application {
     createRoot((dispose) => {
       this.connect("shutdown", dispose)
 
-      const settings = createSettings(new Gio.Settings({ schemaId: import.meta.domain }), schema)
+      const settings = createAppSettings()
 
       return (
         <SettingsContext value={settings}>

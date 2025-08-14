@@ -1,3 +1,4 @@
+import Gio from "gi://Gio"
 import { createContext, createSettings } from "gnim"
 
 type Todo = {
@@ -5,17 +6,29 @@ type Todo = {
   done: boolean
 }
 
-export function isTodo(todo: Record<string, unknown>): todo is Todo {
+function isTodo(todo: Record<string, unknown>): todo is Todo {
   const label = "label" in todo && typeof todo.label === "string"
   const done = "done" in todo && typeof todo.done === "boolean"
   return label && done
 }
 
-export const schema = Object.freeze({
+const schema = Object.freeze({
   todos: "aa{sv}",
 })
 
-type Settings = ReturnType<typeof createSettings<typeof schema>>
+export function createAppSettings() {
+  const { todos, setTodos } = createSettings(
+    new Gio.Settings({ schemaId: import.meta.domain }),
+    schema,
+  )
+
+  return {
+    todos: todos((array) => array.filter(isTodo)),
+    setTodos,
+  }
+}
+
+type Settings = ReturnType<typeof createAppSettings>
 
 export const SettingsContext = createContext<Settings | null>(null)
 

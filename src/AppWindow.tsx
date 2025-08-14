@@ -1,7 +1,7 @@
 import Adw from "gi://Adw"
 import Gtk from "gi://Gtk"
 import GLib from "gi://GLib"
-import { isTodo, useSettings } from "./settings"
+import { useSettings } from "./settings"
 import { createState, For } from "gnim"
 
 interface AppWindowProps {
@@ -12,7 +12,6 @@ interface AppWindowProps {
 export default function AppWindow({ app, ref }: AppWindowProps) {
   const { todos, setTodos } = useSettings()
   const [newTodo, setNewTodo] = createState("")
-  const todoList = todos((t) => t.filter(isTodo))
 
   function addNew() {
     if (!newTodo.get()) return
@@ -70,7 +69,7 @@ export default function AppWindow({ app, ref }: AppWindowProps) {
                 />
               </Gtk.ListBox>
               <Gtk.ListBox class="boxed-list" selectionMode={Gtk.SelectionMode.NONE}>
-                <For each={todoList}>
+                <For each={todos}>
                   {(todo, index) => (
                     <Adw.ActionRow title={todo.label}>
                       <Gtk.Button
