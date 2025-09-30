@@ -4,8 +4,9 @@ import "@girs/gjs/dom"
 
 export declare global {
   export interface ImportMeta {
-    domain: string
-    resource: string
     name: string
+    version: string
+    domain: string
+    datadir: string
   }
 }

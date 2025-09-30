@@ -1,16 +1,14 @@
 # FIXME: rename
-project('todo-demo', version: '0.0.0')
-domain = 'me.example.todoDemo'
-resource = '/me/example/todoDemo'
+project('gnim-demo', version: '0.0.0')
 
+# FIXME: rename
+domain = 'me.example.gnimDemo'
 name = meson.project_name()
 version = meson.project_version()
 
 prefix = get_option('prefix')
-libdir = prefix / get_option('libdir')
 datadir = prefix / get_option('datadir')
 bindir = prefix / get_option('bindir')
-pkgdatadir = datadir / name
 
 custom_target(
   input: configure_file(
@@ -18,9 +16,6 @@ custom_target(
     output: 'main.ts',
     configuration: {
       'gjs': find_program('gjs').full_path(),
-      'version': version,
-      'prefix': prefix,
-      'libdir': libdir,
     },
   ),
   command: [
@@ -30,16 +25,34 @@ custom_target(
     '--external:gi://*',
     '--external:resource://*',
     '--external:system',
+    '--external:gettext',
     '--format=esm',
     '--sourcemap=inline',
     '--target=firefox116',
-    '--define:import.meta.domain="' + domain + '"',
-    '--define:import.meta.resource="' + resource + '"',
     '--define:import.meta.name="' + name + '"',
+    '--define:import.meta.version="' + version + '"',
+    '--define:import.meta.domain="' + domain + '"',
+    '--define:import.meta.datadir="' + datadir + '"',
   ],
   output: name,
   install: true,
   install_dir: bindir,
+)
+
+custom_target(
+  input: configure_file(
+    input: 'src/gschema.ts',
+    output: domain + '.gschema.ts',
+    configuration: {'domain': domain},
+  ),
+  command: [
+    find_program('gjs'),
+    '-m', '@SOURCE_ROOT@/node_modules/gnim-schemas/lib/cli.js',
+    meson.current_build_dir(),
+  ],
+  output: domain + '.gschema.xml',
+  install: true,
+  install_dir: datadir / 'glib-2.0' / 'schemas',
 )
 
 configure_file(
@@ -48,23 +61,6 @@ configure_file(
   configuration: {'exe': bindir / name},
   install: true,
   install_dir: datadir / 'applications',
-)
-
-configure_file(
-  input: 'data/gschema.in.xml',
-  output: domain + '.gschema.xml',
-  configuration: {'resource': resource, 'domain': domain},
-  install: true,
-  install_dir: datadir / 'glib-2.0' / 'schemas',
-)
-
-test(
-  'validate-gschema',
-  find_program('glib-compile-schemas'),
-  args: [
-    '--strict',
-    '--dry-run', meson.current_source_dir(),
-  ],
 )
 
 import('gnome').post_install(

@@ -1,17 +1,17 @@
 #!@gjs@ -m
 
 import { exit, programArgs, programInvocationName } from "system"
+import GLib from "gi://GLib"
+import Gettext from "gettext"
 
-imports.package.init({
-  name: import.meta.domain,
-  version: "@version@",
-  prefix: "@prefix@",
-  libdir: "@libdir@",
-})
-
-pkg.initGettext()
-pkg.initFormat()
+const localedir = GLib.build_filenamev([import.meta.datadir, "locale"])
+Gettext.bindtextdomain(import.meta.domain, localedir)
+Gettext.textdomain(import.meta.domain)
 
 const { App } = await import("../src/App")
-const exitCode = await new App().runAsync([programInvocationName, ...programArgs])
+const exitCode = await new App().runAsync([
+  programInvocationName,
+  ...programArgs,
+])
+
 exit(exitCode)

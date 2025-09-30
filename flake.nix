@@ -1,5 +1,5 @@
 {
-  description = "Todo Demo App using GJS and Gnim";
+  description = "Gnim Demo App";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -12,13 +12,12 @@
 
     nativeBuildInputs = with pkgs; [
       wrapGAppsHook
-      pnpm.configHook
-      pnpm
       gobject-introspection
       meson
       pkg-config
       ninja
       desktop-file-utils
+      libxml2
     ];
 
     buildInputs = with pkgs; [
@@ -29,22 +28,38 @@
       gjs
       esbuild
     ];
+
+    # FIXME: rename
+    pname = "gnim-demo";
+    version = "0.0.0";
+    src = ./.;
   in {
-    packages.${system}. default = pkgs.stdenv.mkDerivation {
-      pname = "todo-demo"; # FIXME: rename
-      version = "0.0.0";
-      src = ./.;
+    packages.${system} = {
+      default = pkgs.stdenv.mkDerivation {
+        inherit pname version nativeBuildInputs buildInputs;
 
-      inherit nativeBuildInputs buildInputs;
+        src = pkgs.stdenv.mkDerivation {
+          inherit src pname version;
 
-      pnpmDeps = pkgs.pnpm.fetchDeps {
-        inherit (self.packages.${system}.default) pname version src;
-        hash = "sha256-MfWRsOzFiVLLVkX6jiHCW7Z44yEtS3uDjdWYf6pbpW8=";
+          nativeBuildInputs = with pkgs; [
+            pnpm.configHook
+            pnpm
+          ];
+
+          pnpmDeps = pkgs.pnpm.fetchDeps {
+            inherit src pname version;
+            hash = "sha256-VarkDqXm9LIFiHpoj6zWd6w3W5kOxsb4koti91AtlK4=";
+          };
+
+          installPhase = ''
+            cp -r . $out
+          '';
+        };
       };
     };
 
     devShells.${system}.default = pkgs.mkShell {
-      inherit nativeBuildInputs buildInputs;
+      packages = nativeBuildInputs ++ buildInputs ++ [pkgs.pnpm];
     };
   };
 }

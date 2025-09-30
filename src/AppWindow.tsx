@@ -1,98 +1,82 @@
 import Adw from "gi://Adw"
 import Gtk from "gi://Gtk"
-import GLib from "gi://GLib"
 import { useSettings } from "./settings"
-import { createState, For } from "gnim"
+import { createState } from "gnim"
+import { gettext as t } from "gettext"
 
-interface AppWindowProps {
+export default function AppWindow(props: {
   app: Adw.Application
   ref: (self: Adw.ApplicationWindow) => void
-}
+}) {
+  let toasts: Adw.ToastOverlay
 
-export default function AppWindow({ app, ref }: AppWindowProps) {
-  const { todos, setTodos } = useSettings()
-  const [newTodo, setNewTodo] = createState("")
+  const { app, ref } = props
+  const { stringKey, setStringKey } = useSettings()
+  const [number, setNumber] = createState(1)
 
-  function addNew() {
-    if (!newTodo.get()) return
-
-    setTodos((todos) => [
-      ...todos,
-      {
-        label: GLib.Variant.new("s", newTodo.get()),
-        done: GLib.Variant.new("b", false),
-      },
-    ])
-    setNewTodo("")
-  }
-
-  function toggle(index: number) {
-    setTodos((todos) => {
-      const todo = todos[index]
-      todo.done = GLib.Variant.new("b", !todo.done.get_boolean())
-      return todos
-    })
-  }
-
-  function remove(index: number) {
-    setTodos((todos) => todos.filter((_, i) => i !== index))
+  function addToast() {
+    toasts.add_toast(
+      new Adw.Toast({
+        title: stringKey.get(),
+        timeout: 2,
+      }),
+    )
   }
 
   return (
     <Adw.ApplicationWindow
       $={ref}
       application={app}
-      title={_("Awesome Todo App")}
-      defaultHeight={600}
-      defaultWidth={500}
+      title={t("My Awesome App")}
     >
-      <Adw.ToolbarView>
-        <Adw.HeaderBar $type="top">
-          <Adw.WindowTitle $type="title" title={_("Awesome Todo App")} />
-        </Adw.HeaderBar>
-        <Gtk.ScrolledWindow>
-          <Adw.Clamp maximumSize={500}>
-            <Gtk.Box
-              marginTop={8}
-              marginBottom={8}
-              marginEnd={8}
-              marginStart={8}
-              spacing={8}
-              orientation={Gtk.Orientation.VERTICAL}
-            >
-              <Gtk.ListBox class="boxed-list" selectionMode={Gtk.SelectionMode.NONE}>
-                <Adw.EntryRow
-                  title={_("New Todo")}
-                  text={newTodo}
-                  onNotifyText={({ text }) => setNewTodo(text)}
-                  onEntryActivated={addNew}
-                />
-              </Gtk.ListBox>
-              <Gtk.ListBox class="boxed-list" selectionMode={Gtk.SelectionMode.NONE}>
-                <For each={todos}>
-                  {(todo, index) => (
-                    <Adw.ActionRow title={todo.label}>
-                      <Gtk.Button
-                        valign={Gtk.Align.CENTER}
-                        class="flat destructive-action"
-                        tooltipText={_("Remove")}
-                        onClicked={() => remove(index.get())}
-                      >
-                        <Gtk.Image iconName="user-trash-symbolic" />
-                      </Gtk.Button>
-                      <Gtk.Switch
-                        valign={Gtk.Align.CENTER}
-                        active={todo.done}
-                        onNotifyActive={() => toggle(index.get())}
-                      />
-                    </Adw.ActionRow>
-                  )}
-                </For>
-              </Gtk.ListBox>
-            </Gtk.Box>
-          </Adw.Clamp>
-        </Gtk.ScrolledWindow>
-      </Adw.ToolbarView>
+      <Adw.ToastOverlay $={(self) => (toasts = self)}>
+        <Adw.ToolbarView>
+          <Adw.HeaderBar $type="top">
+            <Adw.WindowTitle
+              $type="title"
+              title={t("My Awesome App")}
+              subtitle={t("Written with Gnim")}
+            />
+          </Adw.HeaderBar>
+          <Gtk.ScrolledWindow>
+            <Adw.Clamp maximumSize={400}>
+              <Gtk.Box
+                marginTop={8}
+                marginBottom={8}
+                marginEnd={8}
+                marginStart={8}
+                spacing={8}
+                orientation={Gtk.Orientation.VERTICAL}
+              >
+                <Gtk.ListBox
+                  class="boxed-list"
+                  selectionMode={Gtk.SelectionMode.NONE}
+                >
+                  <Adw.EntryRow
+                    title={t("String Key")}
+                    text={stringKey}
+                    onNotifyText={({ text }) => setStringKey(text)}
+                    onEntryActivated={addToast}
+                  />
+                </Gtk.ListBox>
+
+                <Gtk.Box spacing={8} marginTop={12} halign={Gtk.Align.CENTER}>
+                  <Gtk.Button onClicked={() => setNumber((n) => n + 1)}>
+                    {t("Increment")}
+                  </Gtk.Button>
+                  <Gtk.Label
+                    widthRequest={18}
+                    label={number((n) => n.toString())}
+                  />
+                  <Gtk.Button onClicked={() => setNumber((n) => n - 1)}>
+                    {t("Decrement")}
+                  </Gtk.Button>
+                </Gtk.Box>
+              </Gtk.Box>
+            </Adw.Clamp>
+          </Gtk.ScrolledWindow>
+        </Adw.ToolbarView>
+      </Adw.ToastOverlay>
     </Adw.ApplicationWindow>
   )
 }

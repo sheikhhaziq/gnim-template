@@ -9,8 +9,11 @@ importers:
   .:
     dependencies:
       gnim:
-        specifier: latest
-        version: 1.3.1
+        specifier: ^1.8.0
+        version: 1.8.0
+      gnim-schemas:
+        specifier: ^0.2.0
+        version: 0.2.0
     devDependencies:
       '@eslint/js':
         specifier: latest
@@ -540,8 +543,13 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  gnim@1.3.1:
-    resolution: {integrity: sha512-W+DMcVw588x+ozkG3OKUaIFNTc1VDGxPwi0JkBx9l3E2J2Hoeakb7+krAtOQf6OQM5udLhvqINQ/lMbyQtirnA==}
+  gnim-schemas@0.2.0:
+    resolution: {integrity: sha512-cuRXvZeoRlRntUHFk52iSZllzsWNn3QUKQ2d8UHgi+yW/mtir8LwKRmQnnPJ2YNyvX5HYlnpVGF3w/GI5mJH1Q==}
+    engines: {gjs: '>=1.79.0'}
+    hasBin: true
+
+  gnim@1.8.0:
+    resolution: {integrity: sha512-lsfZ+iXiy92zZyD8+R2NtS+JzvWF6VAsppmz3Xr7LyauH0/3E77JUF5HIS3iCOC1pSk9mL9GnxxAiOjdgBo7XQ==}
     engines: {gjs: '>=1.79.0'}
 
   graphemer@1.4.0:
@@ -1345,7 +1353,11 @@ snapshots:
 
   globals@14.0.0: {}
 
-  gnim@1.3.1: {}
+  gnim-schemas@0.2.0:
+    dependencies:
+      gnim: 1.8.0
+
+  gnim@1.8.0: {}
 
   graphemer@1.4.0: {}
 
