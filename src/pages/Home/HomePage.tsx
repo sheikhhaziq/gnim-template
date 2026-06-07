@@ -7,7 +7,15 @@ import Page from "@/components/Page"
 
 export default function HomePage() {
   return (
-    <Page title="HomePage">
+    <Page
+      title="HomePage"
+      header={
+        <Adw.HeaderBar $type="top">
+          <Gtk.Button $type="end" iconName="open-menu-symbolic" />
+          <Gtk.Button $type="end" iconName="system-search-symbolic" />
+        </Adw.HeaderBar>
+      }
+    >
       <Gtk.Box
         valign={Gtk.Align.CENTER}
         halign={Gtk.Align.CENTER}

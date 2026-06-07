@@ -3,7 +3,7 @@ import Gtk from "gi://Gtk"
 
 export default function AboutPage() {
   return (
-    <Page>
+    <Page title="About Page">
       <Gtk.Box
         valign={Gtk.Align.CENTER}
         halign={Gtk.Align.CENTER}
@@ -15,7 +15,6 @@ export default function AboutPage() {
         marginEnd={12}
       >
         <Gtk.Label label="About Page" />
-
         <Gtk.Label label="Welcome to my awesome application." />
       </Gtk.Box>
     </Page>

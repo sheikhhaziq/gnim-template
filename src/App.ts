@@ -36,7 +36,6 @@ export class App extends Adw.Application {
       })
     })
   }
-
   vfunc_activate(): void {
     this.window?.present()
   }
