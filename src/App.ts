@@ -3,9 +3,9 @@ import Gio from "gi://Gio"
 import GLib from "gi://GLib"
 import { register } from "gnim/gobject"
 import { createRoot } from "gnim"
-import { SettingsProvider } from "./providers/SettingsProvider"
+import { SettingsProvider } from "./settings"
 import { gettext as t } from "gettext"
-import AppWindow from "./window"
+import AppWindow from "./AppWindow"
 
 @register()
 export class App extends Adw.Application {
