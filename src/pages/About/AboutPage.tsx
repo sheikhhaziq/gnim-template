@@ -14,13 +14,9 @@ export default function AboutPage() {
         marginStart={12}
         marginEnd={12}
       >
-        <Gtk.Label
-          label="About Page"
-        />
+        <Gtk.Label label="About Page" />
 
-        <Gtk.Label
-          label="Welcome to my awesome application."
-        />
+        <Gtk.Label label="Welcome to my awesome application." />
       </Gtk.Box>
     </Page>
   )

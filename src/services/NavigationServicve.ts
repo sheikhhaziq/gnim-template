@@ -10,9 +10,7 @@ class NavigationService {
 
   private get navigationView(): Adw.NavigationView {
     if (!this.view) {
-      throw new Error(
-        "NavigationView has not been attached",
-      )
+      throw new Error("NavigationView has not been attached")
     }
 
     return this.view
@@ -25,19 +23,13 @@ class NavigationService {
   canPop(): boolean {
     const current = this.navigationView.visiblePage
 
-    if (!current)
-      return false
+    if (!current) return false
 
-    return (
-      this.navigationView.get_previous_page(current)
-      !== null
-    )
+    return this.navigationView.get_previous_page(current) !== null
   }
 
   push(page: GObject.Object) {
-    this.navigationView.push(
-      page as Adw.NavigationPage,
-    )
+    this.navigationView.push(page as Adw.NavigationPage)
   }
 
   pop() {

@@ -7,7 +7,6 @@ export default function AppWindow(props: {
   app: Adw.Application
   ref: (self: Adw.ApplicationWindow) => void
 }) {
-
   const { app, ref } = props
 
   return (
@@ -16,9 +15,7 @@ export default function AppWindow(props: {
       application={app}
       title={t("My Awesome App")}
     >
-      <Adw.NavigationView
-        $={(view)=>NavigationService.attach(view)}
-      >
+      <Adw.NavigationView $={(view) => NavigationService.attach(view)}>
         <HomePage />
       </Adw.NavigationView>
     </Adw.ApplicationWindow>
